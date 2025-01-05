@@ -26,25 +26,7 @@ tbody.find('tr').each((rowIndex, row) => {
     
     // Iterar sobre las celdas (<td>) dentro de cada fila
     $(row).find('td').each((colIndex, col) => {
-        if (colIndex==4){
-            // Buscar el primer <i> con la clase fa-solid y extraer el texto visible
-            const visibleNumber = $(col).find('i.fa-solid').first().text().trim();  // Esto debería darte el "2"
-                
-            // Buscar el número dentro del script, en este caso '6' dentro de ntype("idh112919",6,0,"fa-6")
-            const scriptValue = $('script')
-            scriptValue.filter((_, script) => $(script).html().includes('ntype("idh112919",6,0,"fa-6")'))
-            .html();  // Obtener el contenido del script
-
-            // Usar una expresión regular para extraer el número '6' del script
-            const regex = /ntype\("idh112919",(\d+)/;
-            const match = regex.exec(scriptValue || '');
-            const scriptNumber = match ? match[1] : null; // Esto debería darte el "6" si está presente
-
-            // Mostrar los números extraídos
-            console.log(`Visible Number: ${visibleNumber}`); // Debería mostrar '2'
-            console.log(`Script Number: ${scriptNumber}`);   // Debería mostrar '6'
-        }
-        if (colIndex >= 3 && colIndex!==4){
+        if (colIndex >= 3){
             rowData.push($(col).text().replace(/\s+/g, ' ').trim()); // Obtener el texto de cada celda
         }
     });
