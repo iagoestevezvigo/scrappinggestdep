@@ -1,2 +1,2 @@
 # scrappinggestdep
-Repository made to tryout some scrapping in frontend to get footbal matches results
+Repository made to do some scrapping tryouts to add to the frontend.
