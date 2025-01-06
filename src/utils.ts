@@ -46,11 +46,10 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
             // For each row, find all cells (<td>) and extract their text
             $(row).find('td').each((colindex, cell) => {
                 if (colindex!=1){
-                    rowData.push($(cell).text().trim());
+                    const img = $(cell).find('img');
+                    rowData.push( img.attr('src') ? ("https://www.lapreferente.com/"+img.attr('src')):'No image source');
                 }
-                else{
-                    rowData.push($(cell).text().trim());
-                }
+                rowData.push($(cell).text().trim());
             });
         
             // Add data to the table
