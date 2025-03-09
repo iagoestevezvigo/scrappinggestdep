@@ -40,9 +40,8 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
 
     // Iterate through all rows (<tr>) inside the tbody
     tableClasif.find('tr').each((rowindex, row) => {
+        const rowData: string[] = [];
         if(rowindex>=1){
-            const rowData: string[] = [];
-            
             // For each row, find all cells (<td>) and extract their text
             $(row).find('td').each((colindex, cell) => {
                 if (colindex!=1){
@@ -52,9 +51,21 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
                 rowData.push($(cell).text().trim());
             });
         
-            // Add data to the table
-            table.push(rowData)
         }
+        else{
+            $(row).find('th').each((colindex, cell) => {
+                let cleanText = $(cell)
+                .clone() // Clonar para no modificar el DOM
+                .children() // Seleccionar hijos (iconos y otros elementos)
+                .remove() // Eliminarlos
+                .end() // Volver al elemento original sin los hijos
+                .text() // Obtener el texto limpio
+                .trim();
+                rowData.push(cleanText);
+            });
+        }
+        // Add data to the table
+        table.push(rowData)
         
     });
     return table
