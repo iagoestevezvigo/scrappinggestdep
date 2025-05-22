@@ -33,6 +33,18 @@ export function getclasificationfromhtml(htmlContent: string): string[][] {
 export function getresultsfromtable(htmlContent: string, position_of_table:number): string[][]{
     const $ = cheerio.load(htmlContent);
 
+    const firstThText = $('.lpfTable01').first().find('th').first()
+    .clone()
+    .children()
+    .remove()
+    .end()
+    .text()
+    .trim();
+
+    if (!firstThText.startsWith("JORNADA")) {
+        position_of_table = position_of_table+1;
+    }
+
     // Select the element with the ID 'tableClasif'
     const tableClasif = $('.lpfTable01 tbody').eq(position_of_table);
         
@@ -54,18 +66,35 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
         }
         else{
             $(row).find('th').each((colindex, cell) => {
-                let cleanText = $(cell)
-                .clone() // Clonar para no modificar el DOM
-                .children() // Seleccionar hijos (iconos y otros elementos)
-                .remove() // Eliminarlos
-                .end() // Volver al elemento original sin los hijos
-                .text() // Obtener el texto limpio
-                .trim();
+                const paragraphs = $(cell).find('p');
+
+                let cleanText: string;
+
+                if (paragraphs.length > 0) {
+                    // Extraer texto de cada <p> y unirlos con un espacio
+                    cleanText = Array.from(paragraphs)
+                        .map(el => $(el).text().trim())
+                        .join(' ');
+                } else {
+                    // Si no hay <p>, coger todo el texto del <th> excluyendo hijos como <img> u otros
+                    cleanText = $(cell)
+                        .clone()
+                        .children()
+                        .remove()
+                        .end()
+                        .text()
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                }
+
                 rowData.push(cleanText);
             });
+
         }
-        // Add data to the table
-        table.push(rowData)
+        // Add data to the table if there is no resting
+        if (!rowData.some(cell => cell.includes("Descansan"))) {
+            table.push(rowData);
+        }
         
     });
     return table
