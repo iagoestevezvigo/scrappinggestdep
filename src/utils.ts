@@ -58,7 +58,7 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
             $(row).find('td').each((colindex, cell) => {
                 if (colindex!=1){
                     const img = $(cell).find('img');
-                    rowData.push( img.attr('src') ? ("https://www.lapreferente.com/"+img.attr('src')):'No image source');
+                    rowData.push( img.attr('src') ? ("https://www.lapreferente.com/"+img.attr('src')):'');
                 }
                 rowData.push($(cell).text().trim());
             });
@@ -93,7 +93,15 @@ export function getresultsfromtable(htmlContent: string, position_of_table:numbe
         }
         // Add data to the table if there is no resting
         if (!rowData.some(cell => cell.includes("Descansan"))) {
-            table.push(rowData);
+            if (table.length === 1 && rowData.length < 5) {
+                // Aplanar rowData (el último leído) en un solo string
+                const joined = table[0]+' '+rowData.join(' ').trim();
+                // Sobrescribir el primer elemento con la versión concatenada
+                table[0] = [joined];
+            }
+            else{
+                table.push(rowData);
+            }
         }
         
     });
